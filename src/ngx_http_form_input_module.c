@@ -14,6 +14,9 @@
 #define form_urlencoded_type "application/x-www-form-urlencoded"
 #define form_urlencoded_type_len (sizeof(form_urlencoded_type) - 1)
 
+#define form_multipart_type "multipart/form-data"
+#define form_multipart_type_len (sizeof(form_multipart_type) - 1)
+
 
 typedef struct {
     unsigned        used;  /* :1 */
@@ -248,6 +251,49 @@ ngx_http_form_input_arg(ngx_http_request_t *r, u_char *arg_name, size_t arg_len,
         last = b->last;
     }
 
+    if (ngx_strncasecmp(r->headers_in.content_type->value.data, (u_char *)"multipart/form-data", sizeof("multipart/form-data") - 1) == 0) {
+        u_char *mime_type_end_ptr = (u_char*) ngx_strchr(r->headers_in.content_type->value.data, ';');
+        if (mime_type_end_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "mime_type_end_ptr == NULL"); } else {
+            u_char *boundary_start_ptr = ngx_strstrn(mime_type_end_ptr, "boundary=", sizeof("boundary=") - 1 - 1);
+            if (boundary_start_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "boundary_start_ptr == NULL"); } else {
+                boundary_start_ptr += sizeof("boundary=") - 1;
+                u_char *boundary_end_ptr = boundary_start_ptr + strcspn((char *)boundary_start_ptr, " ;\n\r");
+                if (boundary_end_ptr == boundary_start_ptr) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "boundary_end_ptr == boundary_start_ptr"); } else {
+                    ngx_str_t boundary = {.len = boundary_end_ptr - boundary_start_ptr + 4, .data = ngx_palloc(r->pool, boundary_end_ptr - boundary_start_ptr + 4 + 1)};
+                    if (boundary.data == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "boundary.data == NULL"); } else {
+                        (void) ngx_cpystrn(boundary.data + 4, boundary_start_ptr, boundary_end_ptr - boundary_start_ptr + 1);
+                        boundary.data[0] = '\r'; 
+                        boundary.data[1] = '\n'; 
+                        boundary.data[2] = '-'; 
+                        boundary.data[3] = '-'; 
+                        boundary.data[boundary.len] = '\0';
+                        u_char *d = buf;
+                        for (
+                            u_char *s = d, *name_start_ptr;
+                            (name_start_ptr = ngx_strstrn(s, "\r\nContent-Disposition: form-data; name=\"", sizeof("\r\nContent-Disposition: form-data; name=\"") - 1 - 1)) != NULL;
+                            s += boundary.len
+                        ) {
+                            name_start_ptr += sizeof("\r\nContent-Disposition: form-data; name=\"") - 1;
+                            u_char *name_end_ptr = ngx_strstrn(name_start_ptr, "\"\r\n\r\n", sizeof("\"\r\n\r\n") - 1 - 1);
+                            if (name_end_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "name_end_ptr == NULL"); }
+                            else {
+                                if (d != buf) { *d++ = '&'; }
+                                for (s = name_start_ptr; s < name_end_ptr; *d++ = *s++);
+                                *d++ = '=';
+                                u_char *value_start_ptr = name_end_ptr + sizeof("\"\r\n\r\n") - 1;
+                                u_char *value_end_ptr = ngx_strstrn(value_start_ptr, (char *)boundary.data, boundary.len - 1);
+                                if (value_end_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "value_end_ptr == NULL"); }
+                                else { for (s = value_start_ptr; s < value_end_ptr; *d++ = *s++); }
+                            }
+                        }
+                        *d++ = '\0';
+                        last = d;
+                    }
+                }
+            }
+        }
+    }
+
     for (p = buf; p < last; p++) {
         /* we need '=' after name, so drop one char from last */
 
@@ -426,15 +472,18 @@ ngx_http_form_input_handler(ngx_http_request_t *r)
 
     /* just focus on x-www-form-urlencoded */
 
-    if (value.len < form_urlencoded_type_len
+    if ((value.len < form_urlencoded_type_len
         || ngx_strncasecmp(value.data, (u_char *) form_urlencoded_type,
-                           form_urlencoded_type_len) != 0)
+                           form_urlencoded_type_len) != 0) && (
+         value.len < form_multipart_type_len
+        || ngx_strncasecmp(value.data, (u_char *) form_multipart_type,
+                           form_multipart_type_len) != 0))
     {
-        dd("not application/x-www-form-urlencoded");
+        dd("not application/x-www-form-urlencoded and not multipart/form-data");
         return NGX_DECLINED;
     }
 
-    dd("content type is application/x-www-form-urlencoded");
+    dd("content type is application/x-www-form-urlencoded or multipart/form-data");
 
     dd("create new ctx");
 
