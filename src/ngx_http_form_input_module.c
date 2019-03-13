@@ -286,8 +286,8 @@ ngx_http_form_input_arg(ngx_http_request_t *r, u_char *arg_name, size_t arg_len,
                                 else { for (s = value_start_ptr; s < value_end_ptr; *d++ = *s++); }
                             }
                         }
-                        *d++ = '\0';
                         last = d;
+                        *d++ = '\0';
                     }
                 }
             }
