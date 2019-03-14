@@ -267,31 +267,42 @@ ngx_http_form_input_arg(ngx_http_request_t *r, u_char *arg_name, size_t arg_len,
                         boundary.data[2] = '-'; 
                         boundary.data[3] = '-'; 
                         boundary.data[boundary.len] = '\0';
-                        u_char *d = buf;
                         for (
-                            u_char *s = d, *name_start_ptr;
-                            (name_start_ptr = ngx_strstrn(s, "\r\nContent-Disposition: form-data; name=\"", sizeof("\r\nContent-Disposition: form-data; name=\"") - 1 - 1)) != NULL;
-                            s += boundary.len
+                            u_char *ss = buf, *name_start_ptr;
+                            (name_start_ptr = ngx_strstrn(ss, "\r\nContent-Disposition: form-data; name=\"", sizeof("\r\nContent-Disposition: form-data; name=\"") - 1 - 1)) != NULL;
+                            ss += boundary.len
                         ) {
                             name_start_ptr += sizeof("\r\nContent-Disposition: form-data; name=\"") - 1;
                             u_char *name_end_ptr = ngx_strstrn(name_start_ptr, "\"\r\n\r\n", sizeof("\"\r\n\r\n") - 1 - 1);
-                            if (name_end_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "name_end_ptr == NULL"); }
-                            else {
-                                if (d != buf) { *d++ = '&'; }
-                                for (s = name_start_ptr; s < name_end_ptr; *d++ = *s++);
-                                *d++ = '=';
+                            if (name_end_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "name_end_ptr == NULL"); } else {
                                 u_char *value_start_ptr = name_end_ptr + sizeof("\"\r\n\r\n") - 1;
                                 u_char *value_end_ptr = ngx_strstrn(value_start_ptr, (char *)boundary.data, boundary.len - 1);
-                                if (value_end_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "value_end_ptr == NULL"); }
-                                else { for (s = value_start_ptr; s < value_end_ptr; *d++ = *s++); }
+                                if (value_end_ptr == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "value_end_ptr == NULL"); } else {
+                                    if (ngx_strncasecmp(name_start_ptr, arg_name, arg_len - 1) == 0) {
+                                        if (multi) {
+                                            s = ngx_array_push(array);
+                                            if (s == NULL) {
+                                                return NGX_ERROR;
+                                            }
+                                            s->data = value_start_ptr;
+                                            s->len = value_end_ptr - value_start_ptr;
+                                            dd("array var:%.*s", (int) s->len, s->data);
+
+                                        } else {
+                                            value->data = value_start_ptr;
+                                            value->len = value_end_ptr - value_start_ptr;
+                                            dd("value: [%.*s]", (int) value->len, value->data);
+                                            return NGX_OK;
+                                        }
+                                    }
+                                }
                             }
                         }
-                        last = d;
-                        *d++ = '\0';
                     }
                 }
             }
         }
+        return NGX_OK;
     }
 
     for (p = buf; p < last; p++) {
