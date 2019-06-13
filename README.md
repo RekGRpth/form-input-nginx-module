@@ -1,7 +1,7 @@
 Name
 ====
 
-form-input-nginx-module - NGINX module that reads HTTP POST and PUT request body encoded in "application/x-www-form-urlencoded" and parses the arguments into nginx variables.
+form-input-nginx-module - NGINX module that reads HTTP POST and PUT request body encoded in "application/x-www-form-urlencoded" and "multipart/form-data" and parses the arguments into nginx variables.
 
 Table of Contents
 =================
@@ -19,7 +19,7 @@ Description
 ===========
 
 This is a nginx module that reads HTTP POST and PUT request body encoded
-in "application/x-www-form-urlencoded", and parse the arguments in
+in "application/x-www-form-urlencoded" and "multipart/form-data" and parses the arguments in
 request body into nginx variables.
 
 This module depends on the ngx_devel_kit (NDK) module.
