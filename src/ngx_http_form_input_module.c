@@ -261,7 +261,7 @@ ngx_http_form_input_arg(ngx_http_request_t *r, u_char *arg_name, size_t arg_len,
                 if (boundary_end_ptr == boundary_start_ptr) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "boundary_end_ptr == boundary_start_ptr"); } else {
                     ngx_str_t boundary = {.len = boundary_end_ptr - boundary_start_ptr + 4, .data = ngx_palloc(r->pool, boundary_end_ptr - boundary_start_ptr + 4 + 1)};
                     if (boundary.data == NULL) { ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "boundary.data == NULL"); } else {
-                        (void) ngx_cpystrn(boundary.data + 4, boundary_start_ptr, boundary_end_ptr - boundary_start_ptr + 1);
+                        ngx_cpystrn(boundary.data + 4, boundary_start_ptr, boundary_end_ptr - boundary_start_ptr + 1);
                         boundary.data[0] = '\r'; 
                         boundary.data[1] = '\n'; 
                         boundary.data[2] = '-'; 
