@@ -16,11 +16,9 @@
 
 HTTP_FORM_INPUT_SRCS="                                                      \
                     $ngx_addon_dir/src/ngx_http_form_input_module.c         \
-                    $ngx_addon_dir/src/ndk_set_var.c                                \
                     "
 HTTP_FORM_INPUT_DEPS="                                                      \
                     $ngx_addon_dir/src/ddebug.h                             \
-                    $ngx_addon_dir/src/ndk_set_var.h                                \
                     "
 
 ngx_addon_name=ngx_http_form_input_module
