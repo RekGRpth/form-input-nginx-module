@@ -16,6 +16,9 @@ run_tests();
 __DATA__
 
 === TEST 1: blank body
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar1 {
         set_form_input $foo bar;
@@ -32,6 +35,9 @@ POST /bar1
 
 
 === TEST 2: key not found
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar2 {
         set_form_input $foo bar;
@@ -49,6 +55,9 @@ foo
 
 
 === TEST 3: key not found
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar3 {
         set_form_input $foo bar3;
@@ -65,6 +74,9 @@ foo=
 
 
 === TEST 4: basic key=value
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar4 {
         set_form_input $foo foo;
@@ -81,6 +93,9 @@ bar
 
 
 === TEST 5: test for spliter '&'
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar5 {
         set_form_input $foo foo;
@@ -97,6 +112,9 @@ POST /bar5
 
 
 === TEST 6: test for spliter '&'
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar6 {
         set_form_input $foo foo;
@@ -113,6 +131,9 @@ foo&
 
 
 === TEST 7: test for spliter '&'
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $foo foo;
@@ -129,6 +150,9 @@ foo=&
 
 
 === TEST 8: test for spliter '&'
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar bar;
@@ -146,6 +170,9 @@ POST /bar
 
 
 === TEST 9: test for spliter '&'
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar bar;
@@ -162,6 +189,9 @@ POST /bar
 
 
 === TEST 10: test for spliter '&' and '='
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar bar;
@@ -178,6 +208,9 @@ POST /bar
 
 
 === TEST 11: test for spliter '&' and '='
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar bar;
@@ -194,6 +227,9 @@ foo
 
 
 === TEST 12: test for spliter '&'
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar bar;
@@ -210,6 +246,9 @@ POST /bar
 
 
 === TEST 13: two keys
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar1 foo1;
@@ -230,6 +269,9 @@ bar2
 
 
 === TEST 14: GET request
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar bar;
@@ -246,6 +288,9 @@ bar=foo
 
 
 === TEST 15: no content type
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar {
         set_form_input $bar bar;

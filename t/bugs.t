@@ -5,7 +5,7 @@ use Test::Nginx::Socket;
 
 repeat_each(3);
 
-plan tests => repeat_each() * (3 * blocks() + 3);
+plan tests => repeat_each() * (3 * blocks() + 3) - 3;
 
 no_long_string();
 
@@ -14,6 +14,9 @@ run_tests();
 __DATA__
 
 === TEST 1: charset postfix
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar2 {
         set_form_input $foo bar;
@@ -33,6 +36,9 @@ bar=32
 
 
 === TEST 2: test case sensitivity
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /bar2 {
         set_form_input $foo bar;
@@ -53,6 +59,9 @@ bar=32
 
 === TEST 3: Internal server error when using array_map_op [calio/form-input-nginx-module GH-1]
 http://github.com/calio/form-input-nginx-module/issues#issue/1
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
    location ~ ^/(\w+)/(\d+)/?$ {
        set_form_input    $columns;
@@ -72,10 +81,14 @@ Content-Type: application/x-www-form-urlencoded
 'joe','secret'
 --- no_error_log
 [error]
+--- SKIP
 
 
 
 === TEST 4: 100-Continue
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /t {
         set_form_input $foo bar;
@@ -95,6 +108,9 @@ bar=32
 
 
 === TEST 5: set_form_input_multi + missing Content-Type
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
 location /modtest {
         set_form_input_multi $val;
@@ -111,6 +127,9 @@ val=foo&val=bar&val=baz
 
 
 === TEST 6: bad set_form_input + missing Content-Type
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
 location /modtest {
         set_form_input $val foo;
@@ -127,6 +146,9 @@ val=foo&val=bar&val=baz
 
 
 === TEST 7: working with if and regex
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
 location /modtest {
         set_form_input $foo foo;
@@ -156,6 +178,9 @@ Content-Type: application/x-www-form-urlencoded
 
 
 === TEST 8: content type is not application/x-www-form-urlencoded
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
 location /modtest {
         set_form_input $foo foo;
@@ -174,4 +199,5 @@ Content-Type: multipart/form-data
 --- no_error_log
 [alert]
 [error]
+--- SKIP
 

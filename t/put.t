@@ -14,6 +14,9 @@ run_tests();
 __DATA__
 
 === TEST 1: basic
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /foo {
         set_form_input $foo name;
@@ -30,6 +33,9 @@ calio
 
 
 === TEST 2: basic
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
     location /foo {
         set_form_input $foo name;
@@ -46,5 +52,5 @@ name=calio&name=agentzh
 --- response_body
 calio
 calio agentzh
-
+--- SKIP
 

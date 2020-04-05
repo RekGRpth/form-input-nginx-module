@@ -17,6 +17,10 @@ run_tests();
 __DATA__
 
 === TEST 1: big upload
+--- main_config
+    load_module /etc/nginx/modules/ngx_http_echo_module.so;
+    load_module /etc/nginx/modules/ngx_http_form_input_module.so;
+    load_module /etc/nginx/modules/ngx_http_set_misc_module.so;
 --- config
     location /bar1 {
         client_max_body_size 1m;
