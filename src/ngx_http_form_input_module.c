@@ -18,7 +18,12 @@
 
 
 typedef struct {
-    unsigned        used;  /* :1 */
+    ngx_flag_t        used;
+} ngx_http_form_input_loc_conf_t;
+
+
+typedef struct {
+    ngx_flag_t        used;
 } ngx_http_form_input_main_conf_t;
 
 
@@ -33,6 +38,8 @@ static ngx_int_t ngx_http_set_form_input(ngx_http_request_t *r, ngx_str_t *res,
 static char *ngx_http_set_form_input_conf_handler(ngx_conf_t *cf,
     ngx_command_t *cmd, void *conf);
 static void *ngx_http_form_input_create_main_conf(ngx_conf_t *cf);
+static void *ngx_http_form_input_create_loc_conf(ngx_conf_t *cf);
+static char *ngx_http_form_input_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child);
 static ngx_int_t ngx_http_form_input_init(ngx_conf_t *cf);
 static ngx_int_t ngx_http_form_input_handler(ngx_http_request_t *r);
 static void ngx_http_form_input_post_read(ngx_http_request_t *r);
@@ -70,8 +77,8 @@ static ngx_http_module_t ngx_http_form_input_module_ctx = {
     NULL,                                   /* create server configuration */
     NULL,                                   /* merge server configuration */
 
-    NULL,                                   /* create location configuration */
-    NULL                                    /* merge location configuration */
+    ngx_http_form_input_create_loc_conf,    /* create location configuration */
+    ngx_http_form_input_merge_loc_conf      /* merge location configuration */
 };
 
 
@@ -366,11 +373,16 @@ ngx_http_set_form_input_conf_handler(ngx_conf_t *cf, ngx_command_t *cmd,
     ndk_set_var_t                            filter;
     ngx_str_t                               *value, s;
     u_char                                  *p;
+    ngx_http_form_input_loc_conf_t          *flcf;
     ngx_http_form_input_main_conf_t         *fmcf;
 
 #if defined(nginx_version) && nginx_version >= 8042 && nginx_version <= 8053
     return "does not work with " NGINX_VER;
 #endif
+
+    flcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_form_input_module);
+
+    flcf->used = 1;
 
     fmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_form_input_module);
 
@@ -444,6 +456,11 @@ ngx_http_form_input_handler(ngx_http_request_t *r)
     ngx_http_form_input_ctx_t       *ctx;
     ngx_str_t                        value;
     ngx_int_t                        rc;
+    ngx_http_form_input_loc_conf_t  *flcf;
+
+    flcf = ngx_http_get_module_loc_conf(r, ngx_http_form_input_module);
+
+    if (!flcf->used) return NGX_DECLINED;
 
     dd_enter();
 
@@ -579,4 +596,20 @@ ngx_http_form_input_create_main_conf(ngx_conf_t *cf)
      */
 
     return fmcf;
+}
+
+
+static void *ngx_http_form_input_create_loc_conf(ngx_conf_t *cf) {
+    ngx_http_form_input_loc_conf_t *flcf = ngx_pcalloc(cf->pool, sizeof(*flcf));
+    if (!flcf) { ngx_log_error(NGX_LOG_EMERG, cf->log, 0, "!ngx_pcalloc"); return NULL; }
+    flcf->used = NGX_CONF_UNSET;
+    return flcf;
+}
+
+
+static char *ngx_http_form_input_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child) {
+    ngx_http_form_input_loc_conf_t *prev = parent;
+    ngx_http_form_input_loc_conf_t *conf = child;
+    ngx_conf_merge_value(conf->used, prev->used, 0);
+    return NGX_CONF_OK;
 }
