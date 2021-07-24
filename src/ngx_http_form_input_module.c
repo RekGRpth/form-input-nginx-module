@@ -18,12 +18,12 @@
 
 
 typedef struct {
-    ngx_flag_t        used;
+    ngx_flag_t        enable;
 } ngx_http_form_input_loc_conf_t;
 
 
 typedef struct {
-    ngx_flag_t        used;
+    ngx_flag_t        enable;
 } ngx_http_form_input_main_conf_t;
 
 
@@ -382,11 +382,11 @@ ngx_http_set_form_input_conf_handler(ngx_conf_t *cf, ngx_command_t *cmd,
 
     flcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_form_input_module);
 
-    flcf->used = 1;
+    flcf->enable = 1;
 
     fmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_form_input_module);
 
-    fmcf->used = 1;
+    fmcf->enable = 1;
 
     filter.type = NDK_SET_VAR_MULTI_VALUE;
     filter.size = 1;
@@ -431,7 +431,7 @@ ngx_http_form_input_init(ngx_conf_t *cf)
 
     fmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_form_input_module);
 
-    if (!fmcf->used) {
+    if (!fmcf->enable) {
         return NGX_OK;
     }
 
@@ -460,7 +460,7 @@ ngx_http_form_input_handler(ngx_http_request_t *r)
 
     flcf = ngx_http_get_module_loc_conf(r, ngx_http_form_input_module);
 
-    if (!flcf->used) return NGX_DECLINED;
+    if (!flcf->enable) return NGX_DECLINED;
 
     dd_enter();
 
@@ -592,7 +592,7 @@ ngx_http_form_input_create_main_conf(ngx_conf_t *cf)
     }
 
     /* set by ngx_pcalloc:
-     *      fmcf->used = 0;
+     *      fmcf->enable = 0;
      */
 
     return fmcf;
@@ -602,7 +602,7 @@ ngx_http_form_input_create_main_conf(ngx_conf_t *cf)
 static void *ngx_http_form_input_create_loc_conf(ngx_conf_t *cf) {
     ngx_http_form_input_loc_conf_t *flcf = ngx_pcalloc(cf->pool, sizeof(*flcf));
     if (!flcf) { ngx_log_error(NGX_LOG_EMERG, cf->log, 0, "!ngx_pcalloc"); return NULL; }
-    flcf->used = NGX_CONF_UNSET;
+    flcf->enable = NGX_CONF_UNSET;
     return flcf;
 }
 
@@ -610,6 +610,6 @@ static void *ngx_http_form_input_create_loc_conf(ngx_conf_t *cf) {
 static char *ngx_http_form_input_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child) {
     ngx_http_form_input_loc_conf_t *prev = parent;
     ngx_http_form_input_loc_conf_t *conf = child;
-    ngx_conf_merge_value(conf->used, prev->used, 0);
+    ngx_conf_merge_value(conf->enable, prev->enable, 0);
     return NGX_CONF_OK;
 }
