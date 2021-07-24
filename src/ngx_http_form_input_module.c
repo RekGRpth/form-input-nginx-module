@@ -24,7 +24,7 @@ typedef struct {
 
 typedef struct {
     ngx_flag_t        enable;
-} ngx_http_form_input_main_conf_t;
+} ngx_http_form_input_srv_conf_t;
 
 
 typedef struct {
@@ -37,7 +37,8 @@ static ngx_int_t ngx_http_set_form_input(ngx_http_request_t *r, ngx_str_t *res,
     ngx_http_variable_value_t *v);
 static char *ngx_http_set_form_input_conf_handler(ngx_conf_t *cf,
     ngx_command_t *cmd, void *conf);
-static void *ngx_http_form_input_create_main_conf(ngx_conf_t *cf);
+static void *ngx_http_form_input_create_srv_conf(ngx_conf_t *cf);
+static char *ngx_http_form_input_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child);
 static void *ngx_http_form_input_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_form_input_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child);
 static ngx_int_t ngx_http_form_input_init(ngx_conf_t *cf);
@@ -71,11 +72,11 @@ static ngx_http_module_t ngx_http_form_input_module_ctx = {
     NULL,                                   /* preconfiguration */
     ngx_http_form_input_init,               /* postconfiguration */
 
-    ngx_http_form_input_create_main_conf,   /* create main configuration */
+    NULL,                                   /* create main configuration */
     NULL,                                   /* init main configuration */
 
-    NULL,                                   /* create server configuration */
-    NULL,                                   /* merge server configuration */
+    ngx_http_form_input_create_srv_conf,    /* create server configuration */
+    ngx_http_form_input_merge_srv_conf,     /* merge server configuration */
 
     ngx_http_form_input_create_loc_conf,    /* create location configuration */
     ngx_http_form_input_merge_loc_conf      /* merge location configuration */
@@ -374,7 +375,7 @@ ngx_http_set_form_input_conf_handler(ngx_conf_t *cf, ngx_command_t *cmd,
     ngx_str_t                               *value, s;
     u_char                                  *p;
     ngx_http_form_input_loc_conf_t          *flcf;
-    ngx_http_form_input_main_conf_t         *fmcf;
+    ngx_http_form_input_srv_conf_t          *fscf;
 
 #if defined(nginx_version) && nginx_version >= 8042 && nginx_version <= 8053
     return "does not work with " NGINX_VER;
@@ -384,9 +385,9 @@ ngx_http_set_form_input_conf_handler(ngx_conf_t *cf, ngx_command_t *cmd,
 
     flcf->enable = 1;
 
-    fmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_form_input_module);
+    fscf = ngx_http_conf_get_module_srv_conf(cf, ngx_http_form_input_module);
 
-    fmcf->enable = 1;
+    fscf->enable = 1;
 
     filter.type = NDK_SET_VAR_MULTI_VALUE;
     filter.size = 1;
@@ -427,11 +428,11 @@ ngx_http_form_input_init(ngx_conf_t *cf)
 
     ngx_http_handler_pt             *h;
     ngx_http_core_main_conf_t       *cmcf;
-    ngx_http_form_input_main_conf_t *fmcf;
+    ngx_http_form_input_srv_conf_t  *fscf;
 
-    fmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_form_input_module);
+    fscf = ngx_http_conf_get_module_srv_conf(cf, ngx_http_form_input_module);
 
-    if (!fmcf->enable) {
+    if (!fscf->enable) {
         return NGX_OK;
     }
 
@@ -580,24 +581,19 @@ ngx_http_form_input_post_read(ngx_http_request_t *r)
     }
 }
 
-
-static void *
-ngx_http_form_input_create_main_conf(ngx_conf_t *cf)
-{
-    ngx_http_form_input_main_conf_t    *fmcf;
-
-    fmcf = ngx_pcalloc(cf->pool, sizeof(ngx_http_form_input_main_conf_t));
-    if (fmcf == NULL) {
-        return NULL;
-    }
-
-    /* set by ngx_pcalloc:
-     *      fmcf->enable = 0;
-     */
-
-    return fmcf;
+static void *ngx_http_form_input_create_srv_conf(ngx_conf_t *cf) {
+    ngx_http_form_input_srv_conf_t *server = ngx_pcalloc(cf->pool, sizeof(*server));
+    if (!server) return NULL;
+    server->enable = NGX_CONF_UNSET;
+    return server;
 }
 
+static char *ngx_http_form_input_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child) {
+    ngx_http_form_input_srv_conf_t *prev = parent;
+    ngx_http_form_input_srv_conf_t *conf = child;
+    ngx_conf_merge_value(conf->enable, prev->enable, 0);
+    return NGX_CONF_OK;
+}
 
 static void *ngx_http_form_input_create_loc_conf(ngx_conf_t *cf) {
     ngx_http_form_input_loc_conf_t *flcf = ngx_pcalloc(cf->pool, sizeof(*flcf));
