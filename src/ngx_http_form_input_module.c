@@ -180,7 +180,7 @@ ngx_http_form_input_arg(ngx_http_request_t *r, u_char *arg_name, size_t arg_len,
 {
     u_char              *p, *v, *last, *buf;
     ngx_chain_t         *cl;
-    size_t               len = 0;
+    size_t               len;
     ngx_array_t         *array = NULL;
     ngx_str_t           *s;
     ngx_buf_t           *b;
