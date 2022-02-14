@@ -15,6 +15,7 @@ __DATA__
 
 === TEST 1: basic
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -36,6 +37,7 @@ calio agentzh
 
 === TEST 2: combined
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -60,6 +62,7 @@ calio agentzh guoying nobody somebody
 
 === TEST 3: blank body
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -80,6 +83,7 @@ POST /foo
 
 === TEST 4: not fit
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -101,6 +105,7 @@ a=b&c=d&e=f&g=h&i=j&k=l
 
 === TEST 5: not fit 2
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -122,6 +127,7 @@ somename&name1=calio&sirname=calio
 
 === TEST 6: single value
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -143,6 +149,7 @@ calio
 
 === TEST 7: inplace
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config

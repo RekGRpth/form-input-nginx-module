@@ -17,6 +17,7 @@ __DATA__
 
 === TEST 1: blank body
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -36,6 +37,7 @@ POST /bar1
 
 === TEST 2: key not found
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -56,6 +58,7 @@ foo
 
 === TEST 3: key not found
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -75,6 +78,7 @@ foo=
 
 === TEST 4: basic key=value
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -94,6 +98,7 @@ bar
 
 === TEST 5: test for spliter '&'
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -113,6 +118,7 @@ POST /bar5
 
 === TEST 6: test for spliter '&'
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -132,6 +138,7 @@ foo&
 
 === TEST 7: test for spliter '&'
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -151,6 +158,7 @@ foo=&
 
 === TEST 8: test for spliter '&'
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -171,6 +179,7 @@ POST /bar
 
 === TEST 9: test for spliter '&'
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -190,6 +199,7 @@ POST /bar
 
 === TEST 10: test for spliter '&' and '='
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -209,6 +219,7 @@ POST /bar
 
 === TEST 11: test for spliter '&' and '='
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -228,6 +239,7 @@ foo
 
 === TEST 12: test for spliter '&'
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -247,6 +259,7 @@ POST /bar
 
 === TEST 13: two keys
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -270,6 +283,7 @@ bar2
 
 === TEST 14: GET request
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -289,6 +303,7 @@ bar=foo
 
 === TEST 15: no content type
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config

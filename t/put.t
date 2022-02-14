@@ -15,6 +15,7 @@ __DATA__
 
 === TEST 1: basic
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -34,6 +35,7 @@ calio
 
 === TEST 2: basic
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config

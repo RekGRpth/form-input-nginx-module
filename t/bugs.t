@@ -15,6 +15,7 @@ __DATA__
 
 === TEST 1: charset postfix
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -37,6 +38,7 @@ bar=32
 
 === TEST 2: test case sensitivity
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -60,6 +62,7 @@ bar=32
 === TEST 3: Internal server error when using array_map_op [calio/form-input-nginx-module GH-1]
 http://github.com/calio/form-input-nginx-module/issues#issue/1
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -87,6 +90,7 @@ Content-Type: application/x-www-form-urlencoded
 
 === TEST 4: 100-Continue
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -109,6 +113,7 @@ bar=32
 
 === TEST 5: set_form_input_multi + missing Content-Type
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -128,6 +133,7 @@ val=foo&val=bar&val=baz
 
 === TEST 6: bad set_form_input + missing Content-Type
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -147,6 +153,7 @@ val=foo&val=bar&val=baz
 
 === TEST 7: working with if and regex
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
@@ -179,6 +186,7 @@ Content-Type: application/x-www-form-urlencoded
 
 === TEST 8: content type is not application/x-www-form-urlencoded
 --- main_config
+    load_module /etc/nginx/modules/ndk_http_module.so;
     load_module /etc/nginx/modules/ngx_http_echo_module.so;
     load_module /etc/nginx/modules/ngx_http_form_input_module.so;
 --- config
